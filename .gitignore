@@ -1,3 +1,5 @@
 *.dll
 *.qopraw
 *.qraw
+Cargo.lock
+target/
