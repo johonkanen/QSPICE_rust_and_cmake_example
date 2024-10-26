@@ -41,3 +41,6 @@ CMake and clang compiler can be installed using msys with
 pacman -S mingw-w64-x86_64-cmake
 pacman -S mingw-w64-i686-clang
 ```
+
+
+note that the compiled control.dll needs to be copied from build folder into the `qspice/` folder
