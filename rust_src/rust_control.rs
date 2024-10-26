@@ -22,12 +22,13 @@ pub union uData {
 }
 
 // Initialization atomic flag
-pub extern "stdcall" fn DllMain(_module: *mut c_void, _reason: u32, _reserved: *mut c_void) -> i32 {
+pub extern "stdcall" fn dll_main(_module: *mut c_void, _reason: u32, _reserved: *mut c_void) -> i32 {
     1 // Success
 }
 
 // Constants and mutable static variables
 static CALCULATION_STEP: f64 = 10.0e-6;
+static REFERENCE: f64 = -2.5;
 static KP: f64 = 0.5;
 static KI: f64 = 0.0625;
 
@@ -35,7 +36,7 @@ static mut T_NEXT: f64 = 0.0;
 static mut INTEGRAL: f64 = 0.0;
 
 #[no_mangle]
-pub extern "C" fn control(opaque: *mut *mut c_void, t: f64, data: *mut uData) {
+pub extern "C" fn control(_opaque: *mut *mut c_void, t: f64, data: *mut uData) {
     unsafe {
         let uout        = (*data.add(0)).d;
         let control_ref = &mut (*data.add(1)).d;
@@ -43,7 +44,7 @@ pub extern "C" fn control(opaque: *mut *mut c_void, t: f64, data: *mut uData) {
 
         if t >= T_NEXT {
             T_NEXT = t + CALCULATION_STEP;
-            let error = 1.0 - uout;
+            let error = REFERENCE - uout;
 
             *control_ref = KP * error + INTEGRAL;
             INTEGRAL     = KI * error + INTEGRAL;

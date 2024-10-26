@@ -3,3 +3,4 @@
 *.qraw
 Cargo.lock
 target/
+build/
