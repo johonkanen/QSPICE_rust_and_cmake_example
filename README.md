@@ -5,9 +5,9 @@ to build the source directly from QSPICE, open qspice/controlled_current.qsh
 
 To build with cmake, 
 > mkdir build
-> cd build
-> cmake -G "Ninja" -DCMAKE_C_COMPILER="d:\msys64\mingw32\bin\clang.exe" -DCMAKE_CXX_COMPILER="d:\msys64\mingw32\bin\clang++.exe" .. 
-> cmake --build .
+ cd build
+ cmake -G "Ninja" -DCMAKE_C_COMPILER="d:\msys64\mingw32\bin\clang.exe" -DCMAKE_CXX_COMPILER="d:\msys64\mingw32\bin\clang++.exe" .. 
+ cmake --build .
 
 change the paths to clang and clang++ to your paths where clang compilers are found
 
