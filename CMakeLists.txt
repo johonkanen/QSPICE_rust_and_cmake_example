@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(My32BitDLL)
 
-# Function to create a shared library and copy .dll to destination folder
-function(create_shared_library lib_name source_files destination_folder)
+# Function to create a shared library
+function(create_shared_library lib_name source_files)
 
     add_library(${lib_name} SHARED ${source_files})
 
@@ -24,4 +24,4 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -m32")
 
 # Link with kernel32.dll
-create_shared_library(control "${cpp_control_source_files}" ${CMAKE_SOURCE_DIR}/spice_circuits/qspice)
+create_shared_library(control "${cpp_control_source_files}")
