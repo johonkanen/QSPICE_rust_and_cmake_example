@@ -9,5 +9,5 @@ rand = "0.8" # Add the rand crate for random number generation
 
 [lib]
 crate-type = ["cdylib"] # Configure to create a C-compatible dynamic library
-path = "rust_src/control.rs"
+path = "rust_src/rust_control.rs"
 
