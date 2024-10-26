@@ -1,0 +1,13 @@
+# Cargo.toml
+[package]
+name = "control"
+version = "0.1.0" #initial version
+edition = "2021" #latest Rust edition
+
+[dependencies]
+rand = "0.8" # Add the rand crate for random number generation
+
+[lib]
+crate-type = ["cdylib"] # Configure to create a C-compatible dynamic library
+path = "rust_src/control.rs"
+
