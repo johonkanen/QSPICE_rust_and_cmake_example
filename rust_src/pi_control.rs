@@ -1,5 +1,3 @@
-// rust_src/pi_controller.rs
-
 pub struct PIController {
     pub kp: f64,        // Proportional gain
     pub ki: f64,        // Integral gain

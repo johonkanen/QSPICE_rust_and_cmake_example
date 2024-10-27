@@ -27,11 +27,6 @@ pub union uData {
     pub bytes: *mut u8,
 }
 
-// Initialize PIController globally using Lazy and Mutex for thread safety
-static CONTROLLER: Lazy<Mutex<PIController>> = Lazy::new(|| {
-    Mutex::new(PIController::new(KP, KI))
-});
-
 // Constants and static variables
 static CALCULATION_STEP: f64 = 10.0e-6;
 static REFERENCE: f64 = -2.5;
@@ -39,6 +34,12 @@ static KP: f64 = 0.5;
 static KI: f64 = 0.0625;
 
 static mut T_NEXT: f64 = 0.0;
+
+// Initialize PIController globally using Lazy and Mutex for thread safety
+static CONTROLLER: Lazy<Mutex<PIController>> = Lazy::new(|| {
+    Mutex::new(PIController::new(KP, KI))
+});
+
 
 // DLL main function for initialization
 #[no_mangle]
