@@ -6,6 +6,7 @@ edition = "2021" #latest Rust edition
 
 [dependencies]
 rand = "0.8" # Add the rand crate for random number generation
+once_cell = "1.9" # for creating a global singleton
 
 [lib]
 crate-type = ["cdylib"] # Configure to create a C-compatible dynamic library

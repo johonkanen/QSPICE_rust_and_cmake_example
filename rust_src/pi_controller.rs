@@ -1,15 +1,13 @@
-// lib.rs
+// #[link(name = "kernel32")]
+extern "system" {}
 
-extern crate rand;
-use rand::Rng;
 use std::ffi::c_void;
-use std::sync::Mutex;
-use once_cell::sync::Lazy;
+use rand::Rng;
 
+// Declare the module with module source file name
 mod pi_control;
 pub use pi_control::PIController;
 
-// Externally accessible data structure
 #[repr(C)]
 pub union uData {
     pub b: bool,
@@ -27,43 +25,35 @@ pub union uData {
     pub bytes: *mut u8,
 }
 
-// Initialize PIController globally using Lazy and Mutex for thread safety
-static CONTROLLER: Lazy<Mutex<PIController>> = Lazy::new(|| {
-    Mutex::new(PIController::new(KP, KI))
-});
+// Initialization atomic flag
+pub extern "stdcall" fn dll_main(_module: *mut c_void, _reason: u32, _reserved: *mut c_void) -> i32 {
+    1 // Success
+}
 
-// Constants and static variables
+// Constants and mutable static variables
 static CALCULATION_STEP: f64 = 10.0e-6;
 static REFERENCE: f64 = -2.5;
 static KP: f64 = 0.5;
 static KI: f64 = 0.0625;
 
 static mut T_NEXT: f64 = 0.0;
-
-// DLL main function for initialization
-#[no_mangle]
-pub extern "stdcall" fn dll_main(_module: *mut c_void, _reason: u32, _reserved: *mut c_void) -> i32 {
-    1 // Success
-}
+static mut INTEGRAL: f64 = 0.0;
 
 #[no_mangle]
 pub extern "C" fn control(_opaque: *mut *mut c_void, t: f64, data: *mut uData) {
     unsafe {
-        // Retrieve input and output pointers
         let uout        = (*data.add(0)).d;
         let control_ref = &mut (*data.add(1)).d;
         let load_ref    = &mut (*data.add(2)).d;
 
-        // Control logic with timing check
         if t >= T_NEXT {
             T_NEXT = t + CALCULATION_STEP;
-            
-            // Lock the global controller and compute control output
-            let mut controller = CONTROLLER.lock().unwrap();
-            *control_ref = controller.compute_control(REFERENCE, uout);
+            let error = REFERENCE - uout;
+
+            *control_ref = KP * error + INTEGRAL;
+            INTEGRAL     = KI * error + INTEGRAL;
         }
 
-        // Load reference with random disturbance
         let random_value: f64 = rand::thread_rng().gen_range(-1.0..=1.0);
 
         *load_ref = if t > 20e-3 {
@@ -75,4 +65,3 @@ pub extern "C" fn control(_opaque: *mut *mut c_void, t: f64, data: *mut uData) {
         };
     }
 }
-
