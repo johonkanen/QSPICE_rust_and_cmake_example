@@ -1,4 +1,3 @@
-#include <cstdlib> // for rand
 
 union uData
 {
@@ -29,6 +28,9 @@ int __stdcall DllMain(void *module, unsigned int reason, void *reserved) { retur
 
 /******************/
 
+#include <cstdlib> // for rand
+#include "pi_control.hpp"
+
 double t_next = 0.0;
 const double calculation_step = 10.0e-6;
 
@@ -37,6 +39,8 @@ double integral = 0.0;
 const double reference = 2.0;
 const double kp = 0.5;
 const double ki = 0.0625;
+
+PIController controller(kp, ki);
 
 
 extern "C" __declspec(dllexport) void control(void **opaque, double t, union uData *data)
@@ -51,10 +55,7 @@ extern "C" __declspec(dllexport) void control(void **opaque, double t, union uDa
     {
         t_next = t + calculation_step;
 
-        double error = reference - uout;
-
-        control  = kp * error + integral;
-        integral = ki * error + integral;
+        control = controller.compute_control(reference, uout);
 
     }
     

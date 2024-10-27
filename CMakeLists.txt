@@ -15,6 +15,8 @@ endfunction()
 
 # Add the source files
 set(cpp_control_source_files
+    cpp_src/pi_control.hpp
+    cpp_src/pi_control.cpp
     cpp_src/cmake_control.cpp
 )
 
