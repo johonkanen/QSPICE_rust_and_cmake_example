@@ -8,7 +8,7 @@ double PIController::compute_control(double reference, double measurement) {
     double error = reference - measurement;
 
     double control_out = kp * error + integral;
-    integral           = integral +ki * error;
+    integral           = ki * error + integral;
 
     return control_out;
 }
