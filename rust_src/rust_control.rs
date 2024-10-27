@@ -1,14 +1,3 @@
-// lib.rs
-
-extern crate rand;
-use rand::Rng;
-use std::ffi::c_void;
-use std::sync::Mutex;
-use once_cell::sync::Lazy;
-
-mod pi_control;
-pub use pi_control::PIController;
-
 // Externally accessible data structure
 #[repr(C)]
 pub union uData {
@@ -27,6 +16,23 @@ pub union uData {
     pub bytes: *mut u8,
 }
 
+// DLL main function for initialization
+#[no_mangle]
+pub extern "stdcall" fn dll_main(_module: *mut c_void, _reason: u32, _reserved: *mut c_void) -> i32 {
+    1 // Success
+}
+
+// module start here
+
+extern crate rand;
+use rand::Rng;
+use std::ffi::c_void;
+use std::sync::Mutex;
+use once_cell::sync::Lazy;
+
+mod pi_control;
+pub use pi_control::PIController;
+
 // Constants and static variables
 static CALCULATION_STEP: f64 = 10.0e-6;
 static REFERENCE: f64 = -2.5;
@@ -40,12 +46,6 @@ static CONTROLLER: Lazy<Mutex<PIController>> = Lazy::new(|| {
     Mutex::new(PIController::new(KP, KI))
 });
 
-
-// DLL main function for initialization
-#[no_mangle]
-pub extern "stdcall" fn dll_main(_module: *mut c_void, _reason: u32, _reserved: *mut c_void) -> i32 {
-    1 // Success
-}
 
 #[no_mangle]
 pub extern "C" fn control(_opaque: *mut *mut c_void, t: f64, data: *mut uData) {
